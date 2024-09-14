@@ -472,7 +472,7 @@ class DeepPETDataGenerator:
 
         return DataLoader(check_ds, batch_size=1)
 
-    def save_3d(self, img_np, map_np, odir):
+    def save_3d(self, img_np, odir):
 
         if os.path.exists(odir):
             shutil.rmtree(odir)
@@ -480,25 +480,16 @@ class DeepPETDataGenerator:
 
         for k in np.arange(img_np.shape[0]):
             plt.imshow(img_np[k, :, :], cmap="gray")
-            plt.imshow(map_np[k, :, :], cmap="jet", alpha=0.5)
-            plt.colorbar()
-            plt.clim(0, 255)
             plt.savefig(os.path.join(odir, f"saggital_{k}.png"))
             plt.close()
 
         for k in np.arange(img_np.shape[1]):
             plt.imshow(img_np[:, k, :], cmap="gray")
-            plt.imshow(map_np[:, k, :], cmap="jet", alpha=0.5)
-            plt.colorbar()
-            plt.clim(0, 255)
             plt.savefig(os.path.join(odir, f"coronal_{k}.png"))
             plt.close()
 
         for k in np.arange(img_np.shape[2]):
             plt.imshow(img_np[:, :, k], cmap="gray")
-            plt.imshow(map_np[:, :, k], cmap="jet", alpha=0.5)
-            plt.colorbar()
-            plt.clim(0, 255)
             plt.savefig(os.path.join(odir, f"axial_{k}.png"))
             plt.close()
 
