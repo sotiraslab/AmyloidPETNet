@@ -45,8 +45,3 @@ To help with trouble shooting, the user can optionally save the processed images
 ## Licenses and acknowledgements
 
 This project is licensed under the LICENSE file in the root directory of the project.
-
-The initial code of this repository has been initiated by the [Python Machine Learning Research Project Template](https://github.com/CLAIRE-Labo/python-ml-research-template)
-with the LICENSE.ml-template file.
-
-Additional LICENSE files may be present in subdirectories of the project.
