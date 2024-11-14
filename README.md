@@ -1,3 +1,5 @@
+![image](https://github.com/user-attachments/assets/3d583677-d240-4e33-b935-1ebf015f23d9)
+
 # AmyloidPETNet: Classification of Amyloid Positivity in Brain PET Imaging Using End-to-End Deep Learning
 
 ## Overview
