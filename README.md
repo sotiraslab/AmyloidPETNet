@@ -53,6 +53,7 @@ python train.py
 * `$PATH_TO_TRAIN_DATA`: path to a `.csv` file with the following columns:
     * `img_path`: paths to input images, each image being a 3D frame. 
     * `suvr_positivity`: binary labels of amyloid positivity.
+* `$PATH_TO_VAL_DATA`: same as above but for validation data
 * `$TMP_DIR`: directory for storing temporary cached files of the preprocessing pipeline. This can be any directory that you have write access to, but please note that during clean-up the script will remove all files with a `.pt` suffix. `$TMP_DIR` defaults to `/tmp`.
 
 ## Trouble shooting
