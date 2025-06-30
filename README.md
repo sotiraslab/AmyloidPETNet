@@ -40,6 +40,21 @@ For each frame, the script will output the logit, defined as $
 \text{logit}(p) = \ln\left(\frac{p}{1 - p}\right)
 $, where $p$ is the probability that the corresponding frame is amyloid positive. Throughout the manuscript, we assumed a probability threshold of 0.5 for amyloid positivity, which corresponds to a logit of 0.0. The outputs will be written to a `.csv` file in `$MODEL_DIR` with logits stored under a column named `y_score`. 
 
+## Training AmyloidPETNet on other datasets
+
+If you would like to train AmyloidPETNet from scratch on your own dataset, run the following command
+
+```
+python train.py 
+    --train $PATH_TO_TRAIN_DATA
+    --val $PATH_TO_VAL_DATA
+    --cdir $TMP_DIR
+```
+* `$PATH_TO_TRAIN_DATA`: path to a `.csv` file with the following columns:
+    * `img_path`: paths to input images, each image being a 3D frame. 
+    * `suvr_positivity`: binary labels of amyloid positivity.
+* `$TMP_DIR`: directory for storing temporary cached files of the preprocessing pipeline. This can be any directory that you have write access to, but please note that during clean-up the script will remove all files with a `.pt` suffix. `$TMP_DIR` defaults to `/tmp`.
+
 ## Trouble shooting
 
 To help with trouble shooting, the user can optionally save the processed images as a series of 2D `.png` files that span the axial, coronal, and sagittal views. For an example of this, please refer to `tmp/example`, which contains images of a processed frame from the Centiloid project.
