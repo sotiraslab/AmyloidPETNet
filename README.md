@@ -18,6 +18,82 @@ conda env create -f environment.yml
 ```
 This environment setup had been tested on a Linux cluster with AMD64 CPUs and NVIDIA GPUs. We welcome PRs for environment setups on other platforms.
 
+## Docker (automated workflow)
+
+This repository includes a Dockerized workflow for running inference and training in a reproducible environment.
+
+- `Dockerfile`: builds the project image from `environment.yml` using `micromamba`
+- `docker-compose.yml`: defines the runtime container, cache mount, and output mount
+- `.vscode/tasks.json`: one-click VS Code tasks for Windows+WSL users
+
+### 1) Prerequisites
+
+- Docker Engine with Docker Compose v2
+- For Windows users: Docker Desktop + WSL2 integration enabled
+- For Linux users: Docker and Compose available in your shell
+
+### 2) Build image (automated)
+
+From VS Code:
+
+1. Open Command Palette
+2. Run `Tasks: Run Task`
+3. Choose `Docker: Build AmyloidPETNet image (WSL)`
+
+This task runs:
+
+```
+wsl bash -lc "docker compose build amyloidpetnet"
+```
+
+Equivalent command-line build from repository root:
+
+```bash
+docker compose build amyloidpetnet
+```
+
+### 3) Run prediction (automated)
+
+Use task `Docker: Predict (WSL)`.
+
+It will prompt you for:
+
+- dataset csv path relative to repo (example: `data/predict.csv`)
+- model directory relative to repo (example: `model`)
+- visualization output subdirectory inside `outputs/` (example: `vis`)
+
+The task writes visualizations to `outputs/<your_vis_dir>` and uses `/tmp` inside the container for temporary cache files.
+
+Equivalent command-line prediction from repository root:
+
+```bash
+docker compose run --rm amyloidpetnet predict.py --odir /app/model --dataset /app/data/predict.csv --cdir /tmp --vdir /outputs/vis
+```
+
+### 4) Run training (automated)
+
+Use task `Docker: Train (WSL)`.
+
+It will prompt you for:
+
+- training csv path relative to repo
+- validation csv path relative to repo
+- output subdirectory inside `outputs/`
+
+Training outputs are saved under `outputs/<your_train_output_dir>`.
+
+Equivalent command-line training from repository root:
+
+```bash
+docker compose run --rm amyloidpetnet train.py --train /app/data/train.csv --val /app/data/val.csv --cdir /tmp --odir /outputs/train-run
+```
+
+### 5) Notes on paths
+
+- The tasks map the repo root to `/app` in container.
+- CSVs should use image paths that are accessible from inside container.
+- Easiest approach: keep data under this repo (for example `data/`) and reference `/app/...` paths.
+
 ## Running our model
 
 AmyloidPETNet expects input images of the [NIfTI](https://nifti.nimh.nih.gov) format (`.nii` or `.nii.gz`). Depending on the amyloid tracer, each amyloid brain scan consists of multiple frames of various durations. AmyloidPETNet is compatible with 5-minute frames acquired after the tracer binding steady state was reached. For more details, please refer to [our Radiology manuscript](https://pubs.rsna.org/doi/10.1148/radiol.231442).

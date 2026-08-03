@@ -30,7 +30,7 @@ ds_path = str(args.dataset)
 print(f"path to testing dataset: {ds_path}")
 cdir = str(args.cdir)
 print(f"temporary directory: {cdir}")
-vdir = str(args.vdir)
+vdir = None if args.vdir is None else str(args.vdir)
 print(f"visualization directory: {vdir}")
 
 # initialize model and manager
@@ -63,6 +63,10 @@ try:
     outputs = model_manager.predict(test_ds=test_ds)
     test_df["y_score"] = outputs
     test_df.to_csv(os.path.join(odir, os.path.basename(ds_path)), index=False)
+
+except Exception as exc:
+    print(f"prediction failed: {exc}")
+    raise
 
 finally:
     # clear cache 

@@ -82,6 +82,8 @@ dependencies:
   - pip:
     - absl-py==1.2.0
     - anti-clustering==0.2.1
+    - matplotlib==3.7.5
+    - nibabel==5.2.1
     - monai==0.8.0
     - numpy==1.23.3
     - ortools==9.3.10497
@@ -91,5 +93,6 @@ dependencies:
     - scikit-image==0.19.3
     - scikit-learn==1.1.2
     - scipy==1.9.2
+    - torchsummary==1.5.1
     - tqdm==4.62.3
 

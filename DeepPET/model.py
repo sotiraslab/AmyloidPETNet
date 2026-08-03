@@ -206,12 +206,13 @@ class DeepPETModelManager:
                     test_outputs = self.model(test_img)
                     test_outputs = test_outputs.flatten().detach()
                     outputs[i] = test_outputs.flatten().detach()
-                    print(f"making predictions: {i+1}/{len(test_ds)} –  {outputs[i]}")
+                    print(f"making predictions: {i+1}/{len(test_ds)} - {outputs[i]}")
 
-                except:
-                    print(f"making predictions: {i+1}/{len(test_ds)} –  failed")
+                except Exception as exc:
+                    print(f"making predictions: {i+1}/{len(test_ds)} - failed: {exc}")
             return outputs
-        except:
+        except Exception as exc:
+            print(f"prediction loop failed: {exc}")
             return outputs
 
     def generate_saliency_maps(self, img):

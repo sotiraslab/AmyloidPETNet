@@ -1,0 +1,79 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Docker: Build AmyloidPETNet image (WSL)",
+      "type": "shell",
+      "command": "wsl",
+      "args": [
+        "bash",
+        "-lc",
+        "docker compose build amyloidpetnet"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Docker: Predict (WSL)",
+      "type": "shell",
+      "command": "wsl",
+      "args": [
+        "bash",
+        "-lc",
+        "docker compose run --rm amyloidpetnet predict.py --odir /app/${input:modelDirRel} --dataset /app/${input:predictDatasetRel} --cdir /tmp --vdir /outputs/${input:visDirRel}"
+      ],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Docker: Train (WSL)",
+      "type": "shell",
+      "command": "wsl",
+      "args": [
+        "bash",
+        "-lc",
+        "docker compose run --rm amyloidpetnet train.py --train /app/${input:trainDatasetRel} --val /app/${input:valDatasetRel} --cdir /tmp --odir /outputs/${input:trainOutputRel}"
+      ],
+      "group": "test",
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "predictDatasetRel",
+      "type": "promptString",
+      "description": "Dataset CSV path relative to repo (example: data/predict.csv)",
+      "default": "data/predict.csv"
+    },
+    {
+      "id": "modelDirRel",
+      "type": "promptString",
+      "description": "Model dir relative to repo (should contain model.pth)",
+      "default": "model"
+    },
+    {
+      "id": "visDirRel",
+      "type": "promptString",
+      "description": "Visualization output directory under outputs/",
+      "default": "vis"
+    },
+    {
+      "id": "trainDatasetRel",
+      "type": "promptString",
+      "description": "Training CSV path relative to repo",
+      "default": "data/train.csv"
+    },
+    {
+      "id": "valDatasetRel",
+      "type": "promptString",
+      "description": "Validation CSV path relative to repo",
+      "default": "data/val.csv"
+    },
+    {
+      "id": "trainOutputRel",
+      "type": "promptString",
+      "description": "Training output directory under outputs/",
+      "default": "train-run"
+    }
+  ]
+}

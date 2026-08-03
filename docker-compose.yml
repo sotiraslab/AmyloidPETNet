@@ -1,0 +1,14 @@
+services:
+  amyloidpetnet:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: amyloidpetnet:latest
+    working_dir: /app
+    entrypoint: ["micromamba", "run", "-n", "p3.7torch1.8", "python"]
+    environment:
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - .:/app
+      - ./tmp/docker-cache:/cache
+      - ./outputs:/outputs
