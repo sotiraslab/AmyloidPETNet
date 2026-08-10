@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
     image: amyloidpetnet:latest
     working_dir: /app
+    gpus: all
     entrypoint: ["micromamba", "run", "-n", "p3.7torch1.8", "python"]
     environment:
       PYTHONUNBUFFERED: "1"

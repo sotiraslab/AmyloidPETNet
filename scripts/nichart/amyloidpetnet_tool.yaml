@@ -1,0 +1,44 @@
+# NiChart tool definition for AmyloidPETNet inference.
+# This file follows the NiChart_Project_API tool schema style documented in
+# docs/adding-new-tools.md and resources/tools/SCHEMA.md.
+
+name: AmyloidPETNet Inference
+description: >
+  Runs AmyloidPETNet on a flat directory of NIfTI files. The wrapper script
+  builds the input CSV expected by predict.py, executes inference, and writes
+  predictions.csv to the output mount.
+
+inputs:
+  input_data:
+    type: directory
+
+outputs:
+  output_data:
+    type: directory
+
+mounts:
+  input_data:
+    path_in_container: /input
+    mode: ro
+  output_data:
+    path_in_container: /output
+    mode: rw
+
+parameters: {}
+
+resources:
+  vcpus: 2
+  memory: 8000
+  gpus: 1
+
+time_per_subject_seconds: null
+
+container:
+  image: amyloidpetnet:latest
+  command: >
+    /app/scripts/nichart_predict_wrapper.py
+    --input-dir {input_data}
+    --output-dir {output_data}
+    --model-dir /app/model
+    --cache-dir /tmp
+    --output-csv-name predictions.csv

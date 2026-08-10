@@ -70,6 +70,41 @@ Equivalent command-line prediction from repository root:
 docker compose run --rm amyloidpetnet predict.py --odir /app/model --dataset /app/data/predict.csv --cdir /tmp --vdir /outputs/vis
 ```
 
+## NiChart integration notes
+
+This repository includes a NiChart-compatible inference wrapper:
+
+- `scripts/nichart_predict_wrapper.py`
+
+The wrapper addresses two integration needs:
+
+1. NiChart provides a directory of images, while `predict.py` expects a CSV with an `img_path` column.
+2. `predict.py` writes the output CSV into the model directory (`--odir`), which may be ephemeral in containerized deployments.
+
+The wrapper behavior is:
+
+1. Reads a flat input directory of `.nii` or `.nii.gz` files.
+2. Builds a temporary CSV with `img_path` entries.
+3. Runs `predict.py` using the existing CLI.
+4. Copies the output CSV from the model directory into a user-specified output directory.
+
+Example container command:
+
+```bash
+python /app/scripts/nichart_predict_wrapper.py \
+    --input-dir /input/nifti \
+    --output-dir /output/predictions \
+    --model-dir /app/model \
+    --cache-dir /tmp
+```
+
+Draft NiChart definition files are provided in:
+
+- `scripts/nichart/amyloidpetnet_tool.yaml`
+- `scripts/nichart/amyloidpetnet_pipeline.yaml`
+
+These are intended as starting points and may need small key-name edits to match your NiChart schema version.
+
 ### 4) Run training (automated)
 
 Use task `Docker: Train (WSL)`.

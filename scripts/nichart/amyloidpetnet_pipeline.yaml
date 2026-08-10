@@ -1,0 +1,27 @@
+# NiChart pipeline definition for AmyloidPETNet inference.
+# This file follows the NiChart_Project_API pipeline schema style documented in
+# docs/adding-new-tools.md and resources/pipelines/SCHEMA.md.
+
+pipeline_name: AmyloidPETNet Pipeline
+description: |
+  Single-step inference pipeline that scores a flat directory of PET NIfTI
+  images with AmyloidPETNet and produces a tabular CSV output.
+
+categories:
+  - amyloid
+  - pet
+
+requires: []
+
+steps:
+  - id: run_amyloidpetnet
+    tool: amyloidpetnet_tool
+    inputs:
+      input_data: ${STUDY}/pet
+    outputs:
+      output_data: ${STUDY}/amyloidpetnet_output
+
+results:
+  batch_features:
+    file: "amyloidpetnet_output/predictions.csv"
+    mrid_column: "img_path"
