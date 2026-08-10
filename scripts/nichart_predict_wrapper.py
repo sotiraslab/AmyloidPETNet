@@ -26,10 +26,24 @@ def _is_nifti(path: Path) -> bool:
 
 
 def _collect_nifti_files(input_dir: Path) -> list[str]:
-    # NiChart usually provides a flat directory; scan one level and sort for deterministic ordering.
+    # NiChart usually provides a flat directory; scan one level and sort file paths
     files = [str(path.resolve()) for path in input_dir.iterdir() if path.is_file() and _is_nifti(path)]
     files.sort()
     return files
+
+
+def _derive_mrid(nifti_path: str) -> str:
+    """Derive a subject-style identifier from a NIfTI filename.
+
+    Example:
+      /input/AD01_PiB_5070.nii.gz -> AD01_PiB_5070
+    """
+    name = Path(nifti_path).name
+    if name.lower().endswith(".nii.gz"):
+        return name[:-7]
+    if name.lower().endswith(".nii"):
+        return name[:-4]
+    return Path(name).stem
 
 
 def _run_predict(
@@ -103,10 +117,16 @@ def main() -> int:
 
     print(f"found {len(nifti_files)} NIfTI files")
 
-    # Build the CSV schema expected by predict.py: a single column named "img_path".
+    # Build the CSV schema expected by predict.py and preserve MRID for NiChart result joins.
     with tempfile.TemporaryDirectory(dir=str(cache_dir)) as temp_dir:
         temp_csv = Path(temp_dir) / "nichart_input.csv"
-        pd.DataFrame({"img_path": nifti_files}).to_csv(temp_csv, index=False)
+        mrids = [_derive_mrid(path) for path in nifti_files]
+
+        # NiChart expects a stable per-subject key for batch feature joins.
+        if len(set(mrids)) != len(mrids):
+            raise RuntimeError("derived MRID values are not unique; ensure unique NIfTI basenames in input-dir")
+
+        pd.DataFrame({"MRID": mrids, "img_path": nifti_files}).to_csv(temp_csv, index=False)
 
         _run_predict(
             predict_script=predict_script,

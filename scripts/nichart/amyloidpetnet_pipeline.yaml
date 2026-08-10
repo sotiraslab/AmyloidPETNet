@@ -24,4 +24,4 @@ steps:
 results:
   batch_features:
     file: "amyloidpetnet_output/predictions.csv"
-    mrid_column: "img_path"
+    mrid_column: "MRID"
