@@ -6,6 +6,8 @@ expected by predict.py, runs prediction, and copies the final CSV to a
 user-specified output directory.
 """
 
+from __future__ import annotations
+
 import argparse
 import os
 import shutil

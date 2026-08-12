@@ -5,13 +5,15 @@
 pipeline_name: AmyloidPETNet Pipeline
 description: |
   Single-step inference pipeline that scores a flat directory of PET NIfTI
-  images with AmyloidPETNet and produces a tabular CSV output.
+  images with AmyloidPETNet and produces a tabular CSV of amyloid-positivity
+  scores (y_score) per subject.
 
 categories:
   - amyloid
   - pet
 
-requires: []
+requires:
+  - needs_PET
 
 steps:
   - id: run_amyloidpetnet

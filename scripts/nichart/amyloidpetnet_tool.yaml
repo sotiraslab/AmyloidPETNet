@@ -4,9 +4,9 @@
 
 name: AmyloidPETNet Inference
 description: >
-  Runs AmyloidPETNet on a flat directory of NIfTI files. The wrapper script
+  Runs AmyloidPETNet on a flat directory of PET NIfTI files. The wrapper script
   builds the input CSV expected by predict.py, executes inference, and writes
-  predictions.csv to the output mount.
+  predictions.csv (columns: MRID, img_path, y_score) to the output mount.
 
 inputs:
   input_data:
@@ -34,7 +34,7 @@ resources:
 time_per_subject_seconds: null
 
 container:
-  image: amyloidpetnet:latest
+  image: cbica/amyloidpetnet:0.0.1
   command: >
     /app/scripts/nichart_predict_wrapper.py
     --input-dir {input_data}
