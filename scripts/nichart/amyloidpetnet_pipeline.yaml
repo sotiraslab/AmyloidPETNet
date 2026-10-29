@@ -1,0 +1,54 @@
+# NiChart pipeline definition for AmyloidPETNet inference.
+# This file follows the NiChart_Project_API pipeline schema style documented in
+# docs/adding-new-tools.md and resources/pipelines/SCHEMA.md.
+
+pipeline_name: AmyloidPETNet
+root_pipeline: amyloidpetnet
+harmonized: false
+modalities: [PET]
+description: |
+  Single-step inference pipeline that scores a flat directory of PET NIfTI
+  images with AmyloidPETNet and produces a tabular CSV of amyloid-positivity
+  scores (y_score) per subject.
+
+docs_id: amyloidpetnet
+
+categories:
+  - amyloid
+  - pet
+
+requires:
+  - needs_PET
+
+steps:
+  - id: run_amyloidpetnet
+    tool: amyloidpetnet_tool
+    inputs:
+      input_data: ${STUDY}/pet
+    outputs:
+      output_data: ${STUDY}/amyloidpetnet_output
+
+results:
+  batch_features:
+    file: "amyloidpetnet_output/predictions.csv"
+    mrid_column: "MRID"
+    features:
+      y_score:
+        label: "Amyloid-positivity score"
+        definition: >
+          AmyloidPETNet's per-subject output score for amyloid-beta positivity,
+          derived directly from the amyloid PET image by a deep-learning model.
+          It is a continuous model score (logit), not a calibrated probability.
+        units: "logit"
+        direction: "higher = more likely amyloid-positive"
+        interpretation: >
+          A continuous score, not a diagnosis. Dichotomize using the operating
+          threshold established for the model/tracer; near-threshold values are
+          uncertain. Not equivalent to a Centiloid value.
+        keywords:
+          - "amyloid PET"
+          - "amyloid-beta positivity"
+          - "deep learning amyloid classification"
+          - "Centiloid"
+        # TODO: add the curated AmyloidPETNet citation(s) and DOI(s).
+        references: []
